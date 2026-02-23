@@ -16,3 +16,11 @@ def load_data(path=None):
     if 'Unnamed: 0' in df.columns:
         df.drop(columns=['Unnamed: 0'], inplace=True)
     return df
+
+
+def preprocess(df):
+    df = df.dropna()
+    q_low = df['hg/ha_yield'].quantile(0.01)
+    q_high = df['hg/ha_yield'].quantile(0.99)
+    df = df[(df['hg/ha_yield'] >= q_low) & (df['hg/ha_yield'] <= q_high)]
+    return df.reset_index(drop=True)
