@@ -42,3 +42,18 @@ def encode_and_split(df, test_size=0.2):
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=42
     )
+
+    scaler = StandardScaler()
+    X_train_scaled = pd.DataFrame(
+        scaler.fit_transform(X_train), columns=features, index=X_train.index
+    )
+    X_test_scaled = pd.DataFrame(
+        scaler.transform(X_test), columns=features, index=X_test.index
+    )
+
+    os.makedirs(MODELS_DIR, exist_ok=True)
+    joblib.dump(encoders, os.path.join(MODELS_DIR, 'encoders.pkl'))
+    joblib.dump(scaler, os.path.join(MODELS_DIR, 'scaler.pkl'))
+    joblib.dump(features, os.path.join(MODELS_DIR, 'feature_names.pkl'))
+
+    return X_train_scaled, X_test_scaled, y_train, y_test, encoders, scaler, features
